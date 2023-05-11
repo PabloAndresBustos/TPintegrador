@@ -88,11 +88,22 @@ class Carrito {
 
         console.log("Producto encontrado", producto);
 
-        // Creo un producto nuevo
-        const nuevoProducto = new ProductoEnCarrito(sku, producto.nombre, cantidad);
-        this.productos.push(nuevoProducto);
+        /* creamos una constante que me indica si el producto esta o no en el carrito por medio del indice */
+        const productIndex = this.productos.findIndex(product => product.sku === sku);
+        
+        /* findIndex retorna -1 si el elemento no esta la lista, por lo que de esta manera si no es -1 ingreso a la propiedad
+        cantidad del producto y le sumo la cantidad, caso contrario agrego el nuevo producto */
+        if(productIndex != -1){
+            console.log(productIndex);
+            this.productos[productIndex].cantidad += cantidad;
+        }else{
+            // Creo un producto nuevo
+            const nuevoProducto = new ProductoEnCarrito(sku, producto.nombre, cantidad);
+            this.productos.push(nuevoProducto);
+            this.categorias.push(producto.categoria);
+        }
+
         this.precioTotal = this.precioTotal + (producto.precio * cantidad);
-        this.categorias.push(producto.categoria);
     }
 }
 
@@ -126,3 +137,12 @@ function findProductBySku(sku) {
 
 const carrito = new Carrito();
 carrito.agregarProducto('WE328NJ', 2);
+carrito.agregarProducto('WE328NJ', 2);
+carrito.agregarProducto('WE328NJ', 2);
+carrito.agregarProducto('KS944RUR', 2);
+carrito.agregarProducto('KS944RUR', 3);
+
+setTimeout(()=> {
+    console.log(carrito);
+},1600)
+
