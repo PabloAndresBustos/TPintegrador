@@ -81,29 +81,38 @@ class Carrito {
      * función que agrega @{cantidad} de productos con @{sku} al carrito
      */
     async agregarProducto(sku, cantidad) {
-        console.log(`Agregando ${cantidad} ${sku}`);
+        /* Utilizamos un try catch para poder enviar el mensaje de errro solicitado en el punto 1 - B */
+        try {    
+            console.log(`Agregando ${cantidad} ${sku}`);
 
-        // Busco el producto en la "base de datos"
-        const producto = await findProductBySku(sku);
+            // Busco el producto en la "base de datos"
+            const producto = await findProductBySku(sku)
+            
+            console.log("Producto encontrado", producto);
+    
+            /* creamos una constante que me indica si el producto esta o no en el carrito por medio del indice */
+            const productIndex = this.productos.findIndex(product => product.sku === sku);
+            
+            /* findIndex retorna -1 si el elemento no esta la lista, por lo que de esta manera si no es -1 ingreso a la propiedad
+            cantidad del producto y le sumo la cantidad, caso contrario agrego el nuevo producto */
+            if(productIndex != -1){
+                console.log(productIndex);
+                this.productos[productIndex].cantidad += cantidad;
+            }else{
+                // Creo un producto nuevo
+                const nuevoProducto = new ProductoEnCarrito(sku, producto.nombre, cantidad);
+                this.productos.push(nuevoProducto);
+                this.categorias.push(producto.categoria);
+            }
+    
+            this.precioTotal = this.precioTotal + (producto.precio * cantidad);
 
-        console.log("Producto encontrado", producto);
+        } catch (error) {
+            /* mesansaje de error "amigable" */
+            console.log("Lamentamos informarle que no disponimos del producto solicitado")        
 
-        /* creamos una constante que me indica si el producto esta o no en el carrito por medio del indice */
-        const productIndex = this.productos.findIndex(product => product.sku === sku);
-        
-        /* findIndex retorna -1 si el elemento no esta la lista, por lo que de esta manera si no es -1 ingreso a la propiedad
-        cantidad del producto y le sumo la cantidad, caso contrario agrego el nuevo producto */
-        if(productIndex != -1){
-            console.log(productIndex);
-            this.productos[productIndex].cantidad += cantidad;
-        }else{
-            // Creo un producto nuevo
-            const nuevoProducto = new ProductoEnCarrito(sku, producto.nombre, cantidad);
-            this.productos.push(nuevoProducto);
-            this.categorias.push(producto.categoria);
         }
 
-        this.precioTotal = this.precioTotal + (producto.precio * cantidad);
     }
 }
 
@@ -141,6 +150,7 @@ carrito.agregarProducto('WE328NJ', 2);
 carrito.agregarProducto('WE328NJ', 2);
 carrito.agregarProducto('KS944RUR', 2);
 carrito.agregarProducto('KS944RUR', 3);
+carrito.agregarProducto('KS944', 3); // Producto no existente
 
 setTimeout(()=> {
     console.log(carrito);
