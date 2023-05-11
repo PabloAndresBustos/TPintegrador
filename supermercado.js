@@ -96,7 +96,6 @@ class Carrito {
             /* findIndex retorna -1 si el elemento no esta la lista, por lo que de esta manera si no es -1 ingreso a la propiedad
             cantidad del producto y le sumo la cantidad, caso contrario agrego el nuevo producto */
             if(productIndex != -1){
-                console.log(productIndex);
                 this.productos[productIndex].cantidad += cantidad;
             }else{
                 // Creo un producto nuevo
@@ -105,15 +104,15 @@ class Carrito {
                 this.categorias.push(producto.categoria);
             }
     
-            this.precioTotal = this.precioTotal + (producto.precio * cantidad);
+            this.precioTotal += producto.precio * cantidad;
 
         } catch (error) {
             /* mesansaje de error "amigable" */
-            console.log("Lamentamos informarle que no disponimos del producto solicitado")        
-
+            console.log("Lamentamos informarle que no disponemos del producto solicitado");        
         }
 
     }
+    
 }
 
 // Cada producto que se agrega al carrito es creado con esta clase
@@ -145,7 +144,6 @@ function findProductBySku(sku) {
 }
 
 const carrito = new Carrito();
-carrito.agregarProducto('WE328NJ', 2);
 carrito.agregarProducto('WE328NJ', 2);
 carrito.agregarProducto('WE328NJ', 2);
 carrito.agregarProducto('KS944RUR', 2);
