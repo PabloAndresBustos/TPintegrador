@@ -67,9 +67,9 @@ class Carrito {
             const productIndex = this.productos.findIndex(product => product.sku === sku);
 
             /* Primero valida que la cantidad a agregar sea mayor a 0 */
-            if(cantidad > 0){
-            /* findIndex retorna -1 si el elemento no esta la lista, por lo que de esta manera si no es -1 ingreso a la propiedad
-            cantidad del producto y le sumo la cantidad, caso contrario agrego el nuevo producto */
+            if (cantidad > 0) {
+                /* findIndex retorna -1 si el elemento no esta la lista, por lo que de esta manera si no es -1 ingreso a la propiedad
+                cantidad del producto y le sumo la cantidad, caso contrario agrego el nuevo producto */
                 if (productIndex != -1) {
                     this.productos[productIndex].cantidad += cantidad;
                 } else {
@@ -78,7 +78,7 @@ class Carrito {
                     this.productos.push(nuevoProducto);
                     this.categorias.push(producto.categoria);
                 }
-            }else{
+            } else {
                 console.log("No es posible agregar 0 productos");
             }
 
@@ -94,35 +94,37 @@ class Carrito {
 
     /* Creamos el metodo eliminarProdcuto */
     eliminarProducto(sku, cantidad) {
-        /* Utilizamos la funcion findProductBySku para conseguir los datos del producto a eliminar */
-        findProductBySku(sku).then((producto) => {
-            /* una vez conseguidos los datos del producto vemos si el mismo esta en el carrito */
-            const inCarrito = this.productos.findIndex(product => product.sku === sku);
-            /* Si el inCarrito es diferente a -1 comprobamos  es porque encontramos el producto */ 
-            if(cantidad > 0){
-                if (inCarrito != -1) {
-                    /* si la cantidad ingresada es mayor o igual a la cantidad que ya se encuentra en el carrito */
-                    if (cantidad >= this.productos[inCarrito].cantidad) {
-                        /* Eliminamos el producto del carrito, actualizamos el precio total como asi tambien las categorias*/
-                        this.productos.splice(inCarrito, 1);
-                        this.precioTotal -= producto.precio * cantidad;
-                        this.categorias.splice(inCarrito, 1);
+        return new Promise((resolve, reject) => {
+            findProductBySku(sku).then((producto) => {
+                /* una vez conseguidos los datos del producto vemos si el mismo esta en el carrito */
+                const inCarrito = this.productos.findIndex(product => product.sku === sku);
+                /* Si el inCarrito es diferente a -1 comprobamos  es porque encontramos el producto */
+                if (cantidad > 0) {
+                    if (inCarrito != -1) {
+                        /* si la cantidad ingresada es mayor o igual a la cantidad que ya se encuentra en el carrito */
+                        if (cantidad >= this.productos[inCarrito].cantidad) {
+                            /* Eliminamos el producto del carrito, actualizamos el precio total como asi tambien las categorias*/
+                            this.productos.splice(inCarrito, 1);
+                            this.precioTotal -= producto.precio * cantidad;
+                            this.categorias.splice(inCarrito, 1);
+                        } else {
+                            /* Si la cantidad es menor procedemos a restar la cantida y a actualizar el precio total */
+                            this.productos[inCarrito].cantidad -= cantidad;
+                            this.precioTotal -= producto.precio * cantidad;
+                        }
+                        resolve();
                     } else {
-                        /* Si la cantidad es menor procedemos a restar la cantida y a actualizar el precio total */
-                        this.productos[inCarrito].cantidad -= cantidad;
-                        this.precioTotal -= producto.precio * cantidad;
+                        /* En caso de que inCarrito nos arroje -1 arrojamos un error "amigable" */
+                        throw new Error("producto no encontrado en el carrito");
                     }
                 } else {
-                    /* En caso de que inCarrito nos arroje -1 arrojamos un error "amigable" */
-                    throw new Error("producto no encontrado en el carrito");
+                    console.log("No es posible eliminar 0 productos");
                 }
-            }else{
-                console.log("No es posible eliminar 0 productos");
-            }
 
-        }).catch((error) => {
-            /* Mostramos el error en consola */
-            console.log("producto no encontrado en el carrito");
+            }).catch((error) => {
+                /* Mostramos el error en consola */
+                console.log("producto no encontrado en el carrito");
+            })
         })
     }
 }
@@ -190,7 +192,7 @@ carrito.eliminarProducto('PV332', 2);
 /* Adicional no es posible eliminar 0 productos */
 carrito.eliminarProducto('WE328NJ', 0);
 
-setTimeout(()=>{
+setTimeout(() => {
     console.log(carrito);
 }, 1700)
 
