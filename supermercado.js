@@ -93,8 +93,8 @@ class Carrito {
     }
 
     /* Creamos el metodo eliminarProdcuto */
-    eliminarProducto(sku, cantidad) {
-        findProductBySku(sku).then((producto) => {
+    async eliminarProducto(sku, cantidad) {
+        await findProductBySku(sku).then((producto) => {
             /* una vez conseguidos los datos del producto vemos si el mismo esta en el carrito */
             const inCarrito = this.productos.findIndex(product => product.sku === sku);
             /* Si el inCarrito es diferente a -1 comprobamos  es porque encontramos el producto */
@@ -157,41 +157,160 @@ function findProductBySku(sku) {
 
 /* EJEMPLOS PUNTO POR PUNTO */
 
-const carrito = new Carrito();
-/* a) Al ejecutar agregarProducto 2 veces con los mismos valores debería agregar 1 solo producto con la suma de las cantidades. */
-carrito.agregarProducto('WE328NJ', 2);
-carrito.agregarProducto('WE328NJ', 2);
+function espaciosConsola(){
+    console.log("                                                                           ");
+    console.log("###########################################################################");
+    console.log("                                                                           ");
+}
 
-/* b) Al ejecutar agregarProducto debería actualizar la lista de categorías solamente si la categoría no estaba en la lista. */
-carrito.agregarProducto('KS944RUR', 2);
-carrito.agregarProducto('UI999TY', 2);
+function espacioInterno(){
+    console.log("                                                                           ");
+    console.log("___________________________________________________________________________");
+    console.log("                                                                           ");
+}
 
-/* c) Si intento agregar un producto que no existe debería mostrar un mensaje de error. */
-carrito.agregarProducto('KS944', 2);
+function espaciado(){
+    console.log(" ");
+    console.log(" ");
+}
 
-/* Adicional cuando quiero agregar cantidad 0 de un prodcuto envia mensaje de error y no agrega el producto */
-carrito.agregarProducto('PV332MJ', 0);
+async function pruebas(){
 
-/* 2) Agregar la función eliminarProducto a la clase Carrito */
-/* b) Si la cantidad es menor a la cantidad de ese producto en el carrito, se debe restar esa cantidad al producto */
-/* Agrego 4 gasesas pero elimino 2 me debe devolver 2 */
-carrito.agregarProducto('FN312PPE', 4);
-carrito.eliminarProducto('FN312PPE', 2);
+    espaciosConsola();
+    
+    const carrito = new Carrito();
+    console.log("CREAMOS EL CARRITO: ");
+    espacioInterno();
+    console.log(carrito)
 
-/* c) Si la cantidad es mayor o igual a la cantidad de ese producto en el carrito, se debe eliminar el producto del carrito */
-/* Como tenia 2 Gaseosas elimino las 2 eliminando tambien la categoria */
-carrito.eliminarProducto('FN312PPE', 2);
+    espaciosConsola();
 
-/* d) Si el producto no existe en el carrito, se debe mostrar un mensaje de error. Ejemplo adicional elimino un producto que 
-no esta en la base de datos*/
-carrito.eliminarProducto('PV332MJ', 2);
-carrito.eliminarProducto('PV332', 2);
-
-/* Adicional no es posible eliminar 0 productos */
-carrito.eliminarProducto('WE328NJ', 0);
-
-setTimeout(() => {
+    /* agregar producto */
+    console.log("AGREGAMOS EL PRIMER PRODUCTO: ");
+    espacioInterno();
+    await carrito.agregarProducto('WE328NJ', 2);
+    espaciado();
     console.log(carrito);
-}, 1700)
+
+    espaciosConsola();
+
+    /* a) Al ejecutar agregarProducto 2 veces con los mismos valores debería agregar 1 solo producto con la suma de las cantidades. */
+    console.log("1 - a) Al ejecutar agregarProducto 2 veces con los mismos valores debería agregar 1 solo producto con la suma de las cantidades. ");
+    espacioInterno();
+    console.log("AGREGAMOS UNO: ")
+    espaciado();
+    await carrito.agregarProducto('XX92LKI', 2);
+    espaciado();
+    console.log(carrito.productos);
+    espaciado();
+    console.log("AGREGAMOS OTRO: ");
+    espaciado();
+    await carrito.agregarProducto('XX92LKI', 2);
+    espaciado();
+    console.log("SI AGREGAMOS EL MISMO PRODUCTO SOLO SUMA CANTIDAD DE ESE PRODUCTO: ", carrito.productos);
+    espaciado();
+    console.log("TAMBIEN SUMA A LA CANTIDAD TOTAL DEL CARRITO: ", carrito.precioTotal);
+
+    espaciosConsola();
+    
+    /* b) Al ejecutar agregarProducto debería actualizar la lista de categorías solamente si la categoría no estaba en la lista. */
+    console.log("1 - b Al ejecutar agregarProducto debería actualizar la lista de categorías solamente si la categoría no estaba en la lista.")
+    espacioInterno();
+    console.log("AGREGAMOS UNO: ")
+    espaciado();
+    await carrito.agregarProducto('KS944RUR', 2);
+    espaciado();
+    console.log("AGREGAMOS OTRO: ")
+    espaciado();
+    await carrito.agregarProducto('KS944RUR', 2);
+    espaciado();
+    console.log("AGREGAMOS OTRO: ")
+    espaciado();
+    await carrito.agregarProducto('WE328NJ', 2); 
+    espaciado();
+    console.log("AGREGAMOS PRODUCTOS SIN MULTIPLICAR LAS CATEGORIAS Y SOLO AGREMOS EL QUE NO ESTA: ", carrito.categorias);
+
+    espaciosConsola();
+
+    /* c) Si intento agregar un producto que no existe debería mostrar un mensaje de error. */
+    console.log("1 - c) Si intento agregar un producto que no existe debería mostrar un mensaje de error.")
+    espacioInterno();
+    console.log("ENVIAMOS EL SIGUIENTE MENSAJE: ")
+    espaciado();
+    await carrito.agregarProducto('KS944', 2);
+
+    espaciosConsola();
+
+    /* Adicional cuando quiero agregar cantidad 0 de un prodcuto envia mensaje de error y no agrega el producto */
+    console.log("Adicional cuando quiero agregar cantidad 0 de un prodcuto envia mensaje de error y no agrega el producto");
+    espacioInterno();
+    console.log("ENVIAMOS EL SIGUIENTE MENSAJE: ")
+    espaciado();
+    await carrito.agregarProducto('PV332MJ', 0);
+    espaciado();
+    console.log("EL PRODUCTO NO SE AGREGO: " ,carrito.productos);
+    espaciado();
+    console.log("LAS CATEGORIAS NO SE MODIFICARON: ",carrito.categorias);
+    espaciado();
+    console.log("EL PRECIO TOTAL NO SE MODIFICO: ",carrito.precioTotal);
+
+    espaciosConsola();
+
+    /* 2) Agregar la función eliminarProducto a la clase Carrito */
+    /* b) Si la cantidad es menor a la cantidad de ese producto en el carrito, se debe restar esa cantidad al producto */
+    /* Agrego 4 gasesas pero elimino 2 me debe devolver 2 */
+    console.log("2) Agregar la función eliminarProducto a la clase Carrito");
+    espaciado();
+    console.log("2 - b) Si la cantidad es menor a la cantidad de ese producto en el carrito, se debe restar esa cantidad al producto");
+    espacioInterno();
+    console.log("AGREGO 4 UNIDADES: ");
+    espaciado();
+    await carrito.agregarProducto('FN312PPE', 4);
+    espaciado();
+    console.log("PRODUCTO Y UNIDADES AGREGADOS: ", carrito.productos);
+    espaciado();
+    console.log("PRECIO TOTAL HASTA EL MOMENTO: ", carrito.precioTotal);
+    espaciado();
+    console.log("ELIMINO 2 UNIDADES DEL MISMO PRODCUTO: ");
+    espaciado();
+    await carrito.eliminarProducto('FN312PPE', 2);
+    console.log("LUEGO DE ELIMINAR VEMOS COMO SE MODIFICA LA CANTIDAD: ", carrito.productos);
+    espaciado();
+    console.log("LUEGO DE ELIMINAR VEMOS COMO SE MODIFICA EL PRECIO TOTAL: ", carrito.precioTotal);
+
+    espaciosConsola();
+
+    /* c) Si la cantidad es mayor o igual a la cantidad de ese producto en el carrito, se debe eliminar el producto del carrito */
+    /* Como tenia 2 Gaseosas elimino las 2 eliminando tambien la categoria */
+    console.log("2 - c) Si la cantidad es mayor o igual a la cantidad de ese producto en el carrito, se debe eliminar el producto del carrito.")
+    espacioInterno();
+    await carrito.eliminarProducto('FN312PPE', 3);
+    espaciado();
+    console.log("SE ELIMINA LA TOTALIDAD DEL PRODUCTO: ", carrito.productos);
+    espaciado();
+    console.log("Y SE ELIMINA LA CATEGORIA DEL PRODUCTO: ", carrito.categorias);
+
+    espaciosConsola();
+
+    /* d) Si el producto no existe en el carrito, se debe mostrar un mensaje de error. */
+    console.log("2 - d) Si el producto no existe en el carrito, se debe mostrar un mensaje de error.");
+    espacioInterno();
+    console.log("SI EL PRODUCTO NO ESTA EN EL CARRITO ENVIAMOS EL SIGUIENTE MENSAJE: ")
+    espaciado();
+    await carrito.eliminarProducto('PV332MJ', 2);
+
+    espaciosConsola();
+     
+    /* Adicional no es posible eliminar 0 productos */
+    console.log("Adicional no es posible eliminar 0 productos.")
+    espacioInterno();
+    console.log("SI SE INTENTA ELIMINAR 0 PRODUCTOS DEL CARRITO, ENVIAMOS EL MENSAJE: ");
+    espaciado();
+    await carrito.eliminarProducto('WE328NJ', 0);
+    
+    espaciosConsola();
+}
+
+pruebas();
 
 
