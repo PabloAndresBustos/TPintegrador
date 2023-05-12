@@ -144,17 +144,37 @@ function findProductBySku(sku) {
     });
 }
 
+/* EJEMPLOS PUNTO POR PUNTO */
+
 const carrito = new Carrito();
+/* a) Al ejecutar agregarProducto 2 veces con los mismos valores debería agregar 1 solo producto con la suma de las cantidades. */
 carrito.agregarProducto('WE328NJ', 2);
 carrito.agregarProducto('WE328NJ', 2);
+
+/* b) Al ejecutar agregarProducto debería actualizar la lista de categorías solamente si la categoría no estaba en la lista. */
 carrito.agregarProducto('KS944RUR', 2);
-carrito.agregarProducto('KS944RUR', 3);
-/* Producto no existe */
-carrito.agregarProducto('KS944', 3);
-/* Eliminar producto */
-carrito.eliminarProducto('KS944RUR', 6);
-carrito.eliminarProducto('KS944', 3);
-setTimeout(() => {
+carrito.agregarProducto('UI999TY', 2);
+
+/* c) Si intento agregar un producto que no existe debería mostrar un mensaje de error. */
+carrito.agregarProducto('KS944', 2);
+
+/* 2) Agregar la función eliminarProducto a la clase Carrito */
+/* b) Si la cantidad es menor a la cantidad de ese producto en el carrito, se debe restar esa cantidad al producto */
+/* Agrego 4 gasesas pero elimino 2 me debe devolver 2 */
+carrito.agregarProducto('FN312PPE', 4);
+carrito.eliminarProducto('FN312PPE', 2);
+
+/* c) Si la cantidad es mayor o igual a la cantidad de ese producto en el carrito, se debe eliminar el producto del carrito */
+/* Como tenia 2 Gaseosas elimino las 2 eliminando tambien la categoria */
+carrito.eliminarProducto('FN312PPE', 2);
+
+/* d) Si el producto no existe en el carrito, se debe mostrar un mensaje de error. Ejemplo adicional elimino un producto que 
+no esta en la base de datos*/
+carrito.eliminarProducto('PV332MJ', 2);
+carrito.eliminarProducto('PV332', 2);
+
+setTimeout(()=>{
     console.log(carrito);
-}, 1800)
+}, 1700)
+
 
