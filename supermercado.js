@@ -82,37 +82,61 @@ class Carrito {
      */
     async agregarProducto(sku, cantidad) {
         /* Utilizamos un try catch para poder enviar el mensaje de errro solicitado en el punto 1 - B */
-        try {    
+        try {
             console.log(`Agregando ${cantidad} ${sku}`);
 
             // Busco el producto en la "base de datos"
             const producto = await findProductBySku(sku)
-            
+
             console.log("Producto encontrado", producto);
-    
+
             /* creamos una constante que me indica si el producto esta o no en el carrito por medio del indice */
             const productIndex = this.productos.findIndex(product => product.sku === sku);
-            
+
             /* findIndex retorna -1 si el elemento no esta la lista, por lo que de esta manera si no es -1 ingreso a la propiedad
             cantidad del producto y le sumo la cantidad, caso contrario agrego el nuevo producto */
-            if(productIndex != -1){
+            if (productIndex != -1) {
                 this.productos[productIndex].cantidad += cantidad;
-            }else{
+            } else {
                 // Creo un producto nuevo
                 const nuevoProducto = new ProductoEnCarrito(sku, producto.nombre, cantidad);
                 this.productos.push(nuevoProducto);
                 this.categorias.push(producto.categoria);
             }
-    
+
             this.precioTotal += producto.precio * cantidad;
 
         } catch (error) {
             /* mesansaje de error "amigable" */
-            console.log("Lamentamos informarle que no disponemos del producto solicitado");        
+            console.log("Lamentamos informarle que no disponemos del producto solicitado");
         }
 
     }
-    
+
+    async eliminarProducto(sku, cantidad) {
+        try {
+            const producto = await findProductBySku(sku);
+
+            return new Promise((resolve, reject) => {
+                const inCarrito = this.productos.findIndex(product => product.sku === sku);
+                if (inCarrito != -1) {
+                    if (cantidad >= this.productos[inCarrito].cantidad) {
+                        this.productos.splice(inCarrito, 1);
+                        this.precioTotal -= producto.precio * cantidad;
+                    } else {
+                        this.productos[inCarrito].cantidad -= cantidad;
+                        this.precioTotal -= producto.precio * cantidad;
+                        resolve();
+                    }
+                }else{
+                    throw new Error("producto no encontrado en el carrito");
+                    reject();
+                }
+            });
+        } catch (error) {
+            console.log("producto no encontrado en el carrito");
+        }
+    }
 }
 
 // Cada producto que se agrega al carrito es creado con esta clase
@@ -148,9 +172,12 @@ carrito.agregarProducto('WE328NJ', 2);
 carrito.agregarProducto('WE328NJ', 2);
 carrito.agregarProducto('KS944RUR', 2);
 carrito.agregarProducto('KS944RUR', 3);
-carrito.agregarProducto('KS944', 3); // Producto no existente
-
-setTimeout(()=> {
+/* Producto no existe */
+carrito.agregarProducto('KS944', 3);
+/* Eliminar producto */
+carrito.eliminarProducto('KS944RUR', 1);
+carrito.eliminarProducto('KS944', 3);
+setTimeout(() => {
     console.log(carrito);
-},1600)
+}, 1800)
 
