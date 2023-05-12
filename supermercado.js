@@ -96,9 +96,10 @@ class Carrito {
             if (inCarrito != -1) {
                 /* si la cantidad ingresada es mayor o igual a la cantidad que ya se encuentra en el carrito */
                 if (cantidad >= this.productos[inCarrito].cantidad) {
-                    /* Eliminamos el producto del carrito y actualizamos el precio total */
+                    /* Eliminamos el producto del carrito, actualizamos el precio total como asi tambien las categorias*/
                     this.productos.splice(inCarrito, 1);
                     this.precioTotal -= producto.precio * cantidad;
+                    this.categorias.splice(inCarrito, 1);
                 } else {
                     /* Si la cantidad es menor procedemos a restar la cantida y a actualizar el precio total */
                     this.productos[inCarrito].cantidad -= cantidad;
@@ -151,7 +152,7 @@ carrito.agregarProducto('KS944RUR', 3);
 /* Producto no existe */
 carrito.agregarProducto('KS944', 3);
 /* Eliminar producto */
-carrito.eliminarProducto('KS944RUR', 1);
+carrito.eliminarProducto('KS944RUR', 6);
 carrito.eliminarProducto('KS944', 3);
 setTimeout(() => {
     console.log(carrito);
