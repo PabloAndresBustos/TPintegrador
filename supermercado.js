@@ -113,29 +113,24 @@ class Carrito {
 
     }
 
-    async eliminarProducto(sku, cantidad) {
-        try {
-            const producto = await findProductBySku(sku);
 
-            return new Promise((resolve, reject) => {
-                const inCarrito = this.productos.findIndex(product => product.sku === sku);
-                if (inCarrito != -1) {
-                    if (cantidad >= this.productos[inCarrito].cantidad) {
-                        this.productos.splice(inCarrito, 1);
-                        this.precioTotal -= producto.precio * cantidad;
-                    } else {
-                        this.productos[inCarrito].cantidad -= cantidad;
-                        this.precioTotal -= producto.precio * cantidad;
-                        resolve();
-                    }
-                }else{
-                    throw new Error("producto no encontrado en el carrito");
-                    reject();
+    eliminarProducto(sku, cantidad) {
+        findProductBySku(sku).then((producto) => {
+            const inCarrito = this.productos.findIndex(product => product.sku === sku);
+            if (inCarrito != -1) {
+                if (cantidad >= this.productos[inCarrito].cantidad) {
+                    this.productos.splice(inCarrito, 1);
+                    this.precioTotal -= producto.precio * cantidad;
+                } else {
+                    this.productos[inCarrito].cantidad -= cantidad;
+                    this.precioTotal -= producto.precio * cantidad;
                 }
-            });
-        } catch (error) {
+            } else {
+                throw new Error("producto no encontrado en el carrito");
+            }
+        }).catch((error) => {
             console.log("producto no encontrado en el carrito");
-        }
+        })
     }
 }
 
