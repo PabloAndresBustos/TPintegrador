@@ -93,6 +93,7 @@ class Carrito {
     /* Creamos el metodo eliminarProdcuto */
     async eliminarProducto(sku, cantidad) {
         await findProductBySku(sku).then((producto) => {
+            console.log(`Eliminando ${cantidad} producto ${producto.nombre}`);
             /* una vez conseguidos los datos del producto vemos si el mismo esta en el carrito */
             /* Si el inCarrito es diferente a -1 comprobamos  es porque encontramos el producto */
             const inCarrito = this.productos.findIndex(product => product.sku === sku);
@@ -106,7 +107,6 @@ class Carrito {
                         /* constante sameCategory que nos indica si tengo mas de un producto con la misma categoria
                         de esta menera no eliminamos la categoria si hay varios productos con esa categoria */
                         const sameCategory = this.productos.filter(category => producto.categoria === category);
-                        console.log(sameCategory);
                         if (sameCategory.length <= 1){
                             this.categorias.splice(inCarrito, 1);
                         }
