@@ -76,28 +76,26 @@ class Carrito {
                     // Creo un producto nuevo
                     const nuevoProducto = new ProductoEnCarrito(sku, producto.nombre, cantidad);
                     this.productos.push(nuevoProducto);
-                    this.categorias.push(producto.categoria);
+                    if (!this.categorias.includes(producto.categoria)) {
+                        this.categorias.push(producto.categoria);
+                    }
                 }
             } else {
                 console.log("No es posible agregar 0 productos");
             }
-
-
             this.precioTotal += producto.precio * cantidad;
-
         } catch (error) {
             /* mesansaje de error "amigable" */
             console.log("Lamentamos informarle que no disponemos del producto solicitado");
         }
-
     }
 
     /* Creamos el metodo eliminarProdcuto */
     async eliminarProducto(sku, cantidad) {
         await findProductBySku(sku).then((producto) => {
             /* una vez conseguidos los datos del producto vemos si el mismo esta en el carrito */
-            const inCarrito = this.productos.findIndex(product => product.sku === sku);
             /* Si el inCarrito es diferente a -1 comprobamos  es porque encontramos el producto */
+            const inCarrito = this.productos.findIndex(product => product.sku === sku);
             if (cantidad > 0) {
                 if (inCarrito != -1) {
                     /* si la cantidad ingresada es mayor o igual a la cantidad que ya se encuentra en el carrito */
@@ -105,13 +103,18 @@ class Carrito {
                         /* Eliminamos el producto del carrito, actualizamos el precio total como asi tambien las categorias*/
                         this.productos.splice(inCarrito, 1);
                         this.precioTotal -= producto.precio * cantidad;
-                        this.categorias.splice(inCarrito, 1);
+                        /* constante sameCategory que nos indica si tengo mas de un producto con la misma categoria
+                        de esta menera no eliminamos la categoria si hay varios productos con esa categoria */
+                        const sameCategory = this.productos.filter(category => producto.categoria === category);
+                        console.log(sameCategory);
+                        if (sameCategory.length <= 1){
+                            this.categorias.splice(inCarrito, 1);
+                        }
                     } else {
                         /* Si la cantidad es menor procedemos a restar la cantida y a actualizar el precio total */
                         this.productos[inCarrito].cantidad -= cantidad;
                         this.precioTotal -= producto.precio * cantidad;
                     }
-                    resolve();
                 } else {
                     /* En caso de que inCarrito nos arroje -1 arrojamos un error "amigable" */
                     throw new Error("producto no encontrado en el carrito");
@@ -119,7 +122,6 @@ class Carrito {
             } else {
                 console.log("No es posible eliminar 0 productos");
             }
-
         }).catch((error) => {
             /* Mostramos el error en consola */
             console.log("producto no encontrado en el carrito");
@@ -138,7 +140,6 @@ class ProductoEnCarrito {
         this.nombre = nombre;
         this.cantidad = cantidad;
     }
-
 }
 
 // Función que busca un producto por su sku en "la base de datos"
@@ -156,6 +157,8 @@ function findProductBySku(sku) {
 }
 
 /* EJEMPLOS PUNTO POR PUNTO */
+
+const carrito = new Carrito();
 
 function espaciosConsola(){
     console.log("                                                                           ");
@@ -301,16 +304,33 @@ async function pruebas(){
 
     espaciosConsola();
      
-    /* Adicional no es posible eliminar 0 productos */
-    console.log("Adicional no es posible eliminar 0 productos.")
+    /* Adicional: no es posible eliminar 0 productos */
+    console.log("Adicional: no es posible eliminar 0 productos.")
     espacioInterno();
     console.log("SI SE INTENTA ELIMINAR 0 PRODUCTOS DEL CARRITO, ENVIAMOS EL MENSAJE: ");
     espaciado();
     await carrito.eliminarProducto('WE328NJ', 0);
     
     espaciosConsola();
+
+    /* Adicional: Si varios productos comparten categoria la misma no se debe eliminar. */
+    console.log("Adicional: Si varios productos comparten categoria la misma no se debe eliminar.")
+    espacioInterno();
+    console.log("AGREGAMOS 2 PRODUCTOS DE LA MISMA CATEGORIA QUE NO ESTEN YA EN EL CARRITO: ");
+    espaciado();
+    await carrito.agregarProducto('FN312PPE', 2)
+    espaciado();
+    await carrito.agregarProducto('PV332MJ', 2);
+    espaciado();
+    await carrito.eliminarProducto('PV332MJ', 2);
+    espaciado();
+    console.log("VEMOS QUE LA CATEGORIA NO SE ELIMINA YA QUE LA MISMA ES COMPARTIDA: ", carrito.categorias);
+
+    espaciosConsola();
 }
 
 pruebas();
+
+
 
 
