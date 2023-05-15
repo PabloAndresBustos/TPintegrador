@@ -203,6 +203,8 @@ async function pruebas(){
     espaciado();
     console.log(carrito.productos);
     espaciado();
+    console.log("PRECIO TOTAL HASTA EL MOMENTO: ", carrito.precioTotal);
+    espaciado();
     console.log("AGREGAMOS OTRO: ");
     espaciado();
     await carrito.agregarProducto('XX92LKI', 2);
@@ -216,6 +218,8 @@ async function pruebas(){
     /* b) Al ejecutar agregarProducto debería actualizar la lista de categorías solamente si la categoría no estaba en la lista. */
     console.log("1 - b Al ejecutar agregarProducto debería actualizar la lista de categorías solamente si la categoría no estaba en la lista.")
     espacioInterno();
+    console.log("LISTA DE CATEGORIAS HASTA EL MOMENTO: ", carrito.categorias);
+    espaciado();
     console.log("AGREGAMOS UNO: ")
     espaciado();
     await carrito.agregarProducto('KS944RUR', 2);
@@ -244,6 +248,8 @@ async function pruebas(){
     /* Adicional cuando quiero agregar cantidad 0 de un prodcuto envia mensaje de error y no agrega el producto */
     console.log("Adicional cuando quiero agregar cantidad 0 de un prodcuto envia mensaje de error y no agrega el producto");
     espacioInterno();
+    console.log("PRECIO TOTAL HASTA EL MOMENTO: ", carrito.precioTotal);
+    espaciado();
     console.log("ENVIAMOS EL SIGUIENTE MENSAJE: ")
     espaciado();
     await carrito.agregarProducto('PV332MJ', 0);
