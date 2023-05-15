@@ -56,16 +56,12 @@ class Carrito {
     async agregarProducto(sku, cantidad) {
         /* Utilizamos un try catch para poder enviar el mensaje de errro solicitado en el punto 1 - B */
         try {
-            console.log(`Agregando ${cantidad} ${sku}`);
-
             // Busco el producto en la "base de datos"
             const producto = await findProductBySku(sku)
-
             console.log("Producto encontrado", producto);
-
+            console.log(`Agregando ${cantidad} de ${producto.nombre} codigo: ${sku}`);
             /* creamos una constante que me indica si el producto esta o no en el carrito por medio del indice */
             const productIndex = this.productos.findIndex(product => product.sku === sku);
-
             /* Primero valida que la cantidad a agregar sea mayor a 0 */
             if (cantidad > 0) {
                 /* findIndex retorna -1 si el elemento no esta la lista, por lo que de esta manera si no es -1 ingreso a la propiedad
@@ -93,11 +89,12 @@ class Carrito {
     /* Creamos el metodo eliminarProdcuto */
     async eliminarProducto(sku, cantidad) {
         await findProductBySku(sku).then((producto) => {
-            console.log(`Eliminando ${cantidad} producto ${producto.nombre}`);
+            console.log(`Eliminando ${cantidad} de ${producto.nombre} codigo: ${sku}`);
             /* una vez conseguidos los datos del producto vemos si el mismo esta en el carrito */
-            /* Si el inCarrito es diferente a -1 comprobamos  es porque encontramos el producto */
             const inCarrito = this.productos.findIndex(product => product.sku === sku);
+            /* La cantidad a agregar debe ser mayor a 0 */
             if (cantidad > 0) {
+                /* Si el inCarrito es diferente a -1 es porque encontramos el producto en el carrito */
                 if (inCarrito != -1) {
                     /* si la cantidad ingresada es mayor o igual a la cantidad que ya se encuentra en el carrito */
                     if (cantidad >= this.productos[inCarrito].cantidad) {
@@ -161,15 +158,15 @@ function findProductBySku(sku) {
 const carrito = new Carrito();
 
 function espaciosConsola(){
-    console.log("                                                                           ");
+    console.log(" ");
     console.log("###########################################################################");
-    console.log("                                                                           ");
+    console.log(" ");
 }
 
 function espacioInterno(){
-    console.log("                                                                           ");
+    console.log(" ");
     console.log("___________________________________________________________________________");
-    console.log("                                                                           ");
+    console.log(" ");
 }
 
 function espaciado(){
