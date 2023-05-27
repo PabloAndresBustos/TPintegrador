@@ -57,7 +57,7 @@ class Carrito {
         /* Utilizamos un try catch para poder enviar el mensaje de errro solicitado en el punto 1 - B */
         try {
             // Busco el producto en la "base de datos"
-            const producto = await findProductBySku(sku)
+            const producto = await findProductBySku(sku);
             console.log("Producto encontrado", producto);
             console.log(`Agregando ${cantidad} de ${producto.nombre} codigo: ${sku}`);
             /* creamos una constante que me indica si el producto esta o no en el carrito por medio del indice */
@@ -154,8 +154,6 @@ function findProductBySku(sku) {
 }
 
 /* EJEMPLOS PUNTO POR PUNTO */
-
-const carrito = new Carrito();
 
 function espaciosConsola(){
     console.log(" ");
@@ -333,7 +331,3 @@ async function pruebas(){
 }
 
 pruebas();
-
-
-
-
